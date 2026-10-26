@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'api_settings_screen.dart';
+
 import 'app_theme.dart';
 import 'auth_service.dart';
 import 'home_page.dart';
@@ -43,9 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (result.ok) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomePage()),
-      );
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
     } else {
       setState(() {
         _loading = false;
@@ -88,34 +89,56 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.blue,
+
       body: SafeArea(
         bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      const _Header(),
-                      Expanded(child: _buildPanel(context)),
-                    ],
+        child: Stack(
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          const _Header(),
+                          Expanded(child: _buildPanel(context)),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                );
+              },
+            ),
+            Positioned(
+              top: 8,
+              right: 12,
+              child: IconButton(
+                tooltip: 'Configuración de API',
+                color: Colors.white,
+                iconSize: 28,
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const ApiSettingsScreen(),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildPanel(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: const Color(0xFF374151),
-          fontWeight: FontWeight.w500,
-        );
+    final labelStyle = Theme.of(context).textTheme.labelLarge
+        ?.copyWith(color: const Color(0xFF374151), fontWeight: FontWeight.w500);
 
     return Container(
       width: double.infinity,
@@ -133,9 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'Iniciar sesión',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.ink,
-                    ),
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.ink,
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -165,8 +188,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: _decoration(
                   'Tu contraseña',
                   suffix: IconButton(
-                    tooltip:
-                        _obscure ? 'Mostrar contraseña' : 'Ocultar contraseña',
+                    tooltip: _obscure
+                        ? 'Mostrar contraseña'
+                        : 'Ocultar contraseña',
                     icon: Icon(
                       _obscure
                           ? Icons.visibility_outlined
@@ -183,8 +207,10 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () => _soon('Contacta a tu administrador para '
-                      'restablecer tu contraseña.'),
+                  onPressed: () => _soon(
+                    'Contacta a tu administrador para '
+                    'restablecer tu contraseña.',
+                  ),
                   child: const Text('¿Olvidaste tu contraseña?'),
                 ),
               ),
@@ -198,8 +224,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline,
-                          color: AppColors.fail, size: 20),
+                      const Icon(
+                        Icons.error_outline,
+                        color: AppColors.fail,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -222,7 +251,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   textStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 child: _loading
                     ? const SizedBox(
@@ -248,7 +279,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   textStyle: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w600),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 child: const Text('Ingresar con cuenta corporativa'),
               ),
