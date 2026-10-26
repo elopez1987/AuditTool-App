@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Audit Tool - monocromatico Android 13+</title>
+  <g id="contenido" transform="translate(512 512) scale(0.66) translate(-513 -512)">
+  <defs>
+    <mask id="recorte" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <rect width="1024" height="1024" fill="#FFFFFF"/>
+      <polygon points="372,650 416,602 478,684 672,420 752,420 486,766" fill="#000000" stroke="#000000" stroke-width="56" stroke-linejoin="miter"/>
+    </mask>
+  </defs>
+  <path id="letra-A" fill="#000000" mask="url(#recorte)" d="M235 822 L440 203 L585 203 L791 822 L660 822 L512 377 L372 822 Z"/>
+  <polygon id="palomita" fill="#000000" points="372,650 416,602 478,684 672,420 752,420 486,766"/>
+  </g>
+</svg>

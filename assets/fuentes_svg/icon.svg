@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Audit Tool - icono</title>
+  <rect id="fondo" width="1024" height="1024" fill="#17408B"/>
+  <path id="letra-A" fill="#FFFFFF" d="M235 822 L440 203 L585 203 L791 822 L660 822 L512 377 L372 822 Z"/>
+  <polygon id="palomita-recorte" fill="#17408B" stroke="#17408B" stroke-width="30" stroke-linejoin="miter" points="372,650 416,602 478,684 672,420 752,420 486,766"/>
+  <polygon id="palomita" fill="#D61016" points="372,650 416,602 478,684 672,420 752,420 486,766"/>
+</svg>
