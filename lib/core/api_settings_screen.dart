@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'api_config.dart';
-import 'app_theme.dart';
+import 'theme/app_theme.dart';
 
 class ApiSettingsScreen extends StatefulWidget {
   const ApiSettingsScreen({super.key});

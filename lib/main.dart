@@ -1,9 +1,15 @@
-import 'package:audit_tool/login_screen.dart';
+import 'package:audit_tool/core/api_config.dart';
+import 'package:audit_tool/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'app_theme.dart';
+import 'core/routes/app_routes.dart';
 
-void main() {
+import 'core/theme/app_theme.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await ApiConfig.init();
   runApp(const MyApp());
 }
 
@@ -23,7 +29,16 @@ class MyApp extends StatelessWidget {
       title: 'Audit Tool',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const LoginScreen(),
+      //home: const MockupApp1(),
+      //home: const LoginScreen(),
+      //VALIDA LA SESION Y REDIRIGE A LA PANTALLA CORRECTA
+
+      //home: const SplashScreen(),
+
+      //Nuevos cambios generados para el manejo de sesiones y la pantalla de inicio
+      navigatorKey: navigatorKey,
+      initialRoute: AppRoutes.splash,
+      onGenerateRoute: AppRouter.onGenerate,
     );
   }
 }

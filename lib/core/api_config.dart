@@ -1,46 +1,39 @@
-/* class ApiConfig {
-  static const baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://audittool.test',
-  );
-
-  /// Se envía en el header X-App-Token en cada petición.
-  static const appToken = String.fromEnvironment(
-    '5623e76c241327da147fce96144d82ea4e6c79cca7ea244043f647f8f7e870db',
-  );
-
-  static String get loginUrl => '$baseUrl/api/v1/auth/login';
-}
- */
-//Nueva integración de la API
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiConfig {
-  static const _baseUrlKey = 'api_base_url';
-
+  static const _baseUrlKey = '';
   static const _defaultBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://audittool.test',
-  );
-
-  static const appToken = String.fromEnvironment(
-    'API_APP_TOKEN',
     defaultValue: '',
   );
+  static const appToken = String.fromEnvironment(
+    'X-App-Token',
+    defaultValue:
+        '5623e76c241327da147fce96144d82ea4e6c79cca7ea244043f647f8f7e870db',
+  );
+
+  static bool get isConfigured => _baseUrl.isNotEmpty;
 
   static String _baseUrl = _defaultBaseUrl;
-
   static String get baseUrl => _baseUrl;
-
-  static String get loginUrl => '$baseUrl/api/v1/auth/login';
+  static String get loginUrl => _baseUrl + '/v1/auth/login';
+  static String get meUrl => _baseUrl + '/v1/auth/me';
+  static String get logoutUrl => _baseUrl + '/v1/auth/logout';
 
   static Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    _baseUrl = prefs.getString(_baseUrlKey) ?? _defaultBaseUrl;
+
+    final savedUrl = prefs.getString(_baseUrlKey);
+
+    _baseUrl = (savedUrl == null || savedUrl.isEmpty)
+        ? _defaultBaseUrl
+        : savedUrl;
+
+    print('API CONFIG INICIALIZADA: $_baseUrl');
   }
 
   static Future<void> saveBaseUrl(String value) async {
+    print('API Base URL: $baseUrl');
     final normalized = value.trim().replaceFirst(RegExp(r'/+$'), '');
 
     final uri = Uri.tryParse(normalized);

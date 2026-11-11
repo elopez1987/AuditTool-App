@@ -1,10 +1,11 @@
+import 'package:audit_tool/core/api_config.dart';
 import 'package:flutter/material.dart';
 
-import 'api_settings_screen.dart';
+import '../core/api_settings_screen.dart';
 
-import 'app_theme.dart';
-import 'auth_service.dart';
-import 'home_page.dart';
+import '../core/theme/app_theme.dart';
+import '../services/auth_service.dart';
+import '../home_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,25 +33,50 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  // Usuario de acceso offline-google
+  static const String _offlineUser = 'auditor.master';
+  static const String _offlinePassword = 'Audit2026!';
+
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
+
     if (!_formKey.currentState!.validate()) return;
+
+    final username = _userCtrl.text.trim();
+    final password = _passCtrl.text;
 
     setState(() {
       _loading = true;
       _error = null;
     });
 
-    final result = await _auth.signIn(_userCtrl.text.trim(), _passCtrl.text);
-    if (!mounted) return;
-
-    if (result.ok) {
+    // 1. Validar usuario especial offline
+    if (username == _offlineUser && password == _offlinePassword) {
+      if (!mounted) return;
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
-    } else {
+      return;
+    }
+
+    // 2. Autenticación normal mediante API
+    try {
+      final result = await _auth.signIn(username, password);
+      if (!mounted) return;
+      if (result.ok) {
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+      } else {
+        setState(() {
+          _loading = false;
+          _error = result.error;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = result.error;
+        _error = 'No fue posible conectar con el servidor.';
       });
     }
   }

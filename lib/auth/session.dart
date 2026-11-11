@@ -52,38 +52,65 @@ class Session {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'centerId': centerId,
-        'centerName': centerName,
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'tokenType': tokenType,
-        'expiresAt': expiresAt.toIso8601String(),
-        'permissions': permissions,
-        'parameters': parameters,
-      };
+    'name': name,
+    'centerId': centerId,
+    'centerName': centerName,
+    'accessToken': accessToken,
+    'refreshToken': refreshToken,
+    'tokenType': tokenType,
+    'expiresAt': expiresAt.toIso8601String(),
+    'permissions': permissions,
+    'parameters': parameters,
+  };
 
   factory Session.fromJson(Map<String, dynamic> j) => Session(
-        name: j['name'] as String? ?? '',
-        centerId: j['centerId'] as String? ?? '',
-        centerName: j['centerName'] as String? ?? '',
-        accessToken: j['accessToken'] as String,
-        refreshToken: j['refreshToken'] as String? ?? '',
-        tokenType: j['tokenType'] as String? ?? 'Bearer',
-        expiresAt: DateTime.parse(j['expiresAt'] as String),
-        permissions: (j['permissions'] as List?) ?? const [],
-        parameters:
-            (j['parameters'] as Map?)?.cast<String, dynamic>() ?? const {},
-      );
+    name: j['name'] as String? ?? '',
+    centerId: j['centerId'] as String? ?? '',
+    centerName: j['centerName'] as String? ?? '',
+    accessToken: j['accessToken'] as String,
+    refreshToken: j['refreshToken'] as String? ?? '',
+    tokenType: j['tokenType'] as String? ?? 'Bearer',
+    expiresAt: DateTime.parse(j['expiresAt'] as String),
+    permissions: (j['permissions'] as List?) ?? const [],
+    parameters: (j['parameters'] as Map?)?.cast<String, dynamic>() ?? const {},
+  );
 }
 
 /// Guarda la sesión de forma cifrada (Keychain en iOS, Keystore en Android).
+
 class SessionStore {
   static const _storage = FlutterSecureStorage();
   static const _key = 'session';
+  //PARA USUARIOS DE PRUEBA, SE PUEDE USAR ESTE USUARIO MASTER PARA INICIAR SESIÓN SIN CREDENCIALES
+  static const String masterUser = 'auditor.master';
+  static String get currentUsername => current?.name ?? '';
 
-  static Future<void> save(Session s) =>
-      _storage.write(key: _key, value: jsonEncode(s.toJson()));
+  /// true solo si la sesión actual es la del usuario especial offline.
+  static bool get isMaster =>
+      currentUsername.trim().toLowerCase() == masterUser;
+
+  /// Sesión local para auditor.master: no toca la API ni el almacenamiento seguro.
+  static void startMasterSession() {
+    current = Session(
+      name: masterUser,
+      centerId: '',
+      centerName: 'Pruebas',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: 'Bearer',
+      expiresAt: DateTime.now().add(const Duration(days: 365)),
+    );
+  }
+
+  ///
+
+  /// Sesión en memoria para usarla en cualquier pantalla.
+  static Session? current;
+
+  static Future<void> save(Session s) async {
+    current = s;
+    await _storage.write(key: _key, value: jsonEncode(s.toJson()));
+  }
 
   static Future<Session?> read() async {
     final raw = await _storage.read(key: _key);
@@ -95,5 +122,20 @@ class SessionStore {
     }
   }
 
-  static Future<void> clear() => _storage.delete(key: _key);
+  /// Lee la sesión guardada y la deja en memoria solo si sigue vigente.
+  static Future<Session?> restore() async {
+    final s = await read();
+    if (s == null) return null;
+    if (s.isExpired) {
+      await clear();
+      return null;
+    }
+    current = s;
+    return s;
+  }
+
+  static Future<void> clear() async {
+    current = null;
+    await _storage.delete(key: _key);
+  }
 }

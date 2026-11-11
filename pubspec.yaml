@@ -2,7 +2,7 @@ name: audit_tool
 description: "Auditoría para recepción de material"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.13.4
@@ -37,6 +37,12 @@ dependencies:
   http: ^1.6.0
   flutter_secure_storage: ^11.2.0
   shared_preferences: ^2.5.6
+  flutter_barcode_scanner_update: ^2.3.2
+  image_picker: ^1.2.4
+  permission_handler: ^13.0.2
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  sqflite: ^2.4.5
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1 
@@ -74,6 +80,7 @@ flutter:
   assets:
   - assets/
   - assets/logo/ 
+  - assets/icon/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
